@@ -1,0 +1,11 @@
+{
+  "name": "fsda-assessment",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "client": "npm run --workspace=client dev",
+    "server": "npm run --workspace=server dev"
+  }
+}

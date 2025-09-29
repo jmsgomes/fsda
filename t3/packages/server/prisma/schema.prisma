@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model SewerInspection {
+  id                 String    @id
+  timestamp_utc      DateTime
+  location           Location  @relation(fields: [locationId], references: [id])
+  locationId         Int       @unique
+  pipe               Pipe      @relation(fields: [pipeId], references: [id])
+  pipeId             Int       @unique
+  defects            Defect[]
+  inspection_score   Float
+  requires_repair    Boolean
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+model Location {
+  id                 Int      @id @default(autoincrement())
+  city               String
+  state              String
+  street             String
+  upstream_manhole   String
+  downstream_manhole String
+  inspection         SewerInspection?
+}
+
+model Pipe {
+  id             Int      @id @default(autoincrement())
+  material       String
+  diameter_in    Float
+  length_ft      Float
+  age_years      Int
+  inspection     SewerInspection?
+}
+
+model Defect {
+  id              Int      @id @default(autoincrement())
+  code            String
+  description     String
+  severity        Int
+  distance_ft     Float
+  inspection      SewerInspection @relation(fields: [inspectionId], references: [id])
+  inspectionId    String
+}
